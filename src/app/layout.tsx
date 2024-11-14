@@ -1,6 +1,6 @@
 import { PropsWithChildren } from 'react';
 import type { Metadata } from 'next';
-import { Montserrat, Montserrat_Alternates } from 'next/font/google';
+import { DM_Sans } from 'next/font/google';
 import Link from 'next/link';
 import { IoLogoFacebook, IoLogoInstagram, IoLogoTwitter } from 'react-icons/io5';
 
@@ -8,6 +8,8 @@ import { Logo } from '@/components/logo';
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/utils/cn';
 import { Analytics } from '@vercel/analytics/react';
+import { ThemeProvider } from '@/components/theme-provider';
+import { ModeToggle } from '@/components/mode-toggle';
 
 import { Navigation } from './navigation';
 
@@ -15,15 +17,10 @@ import '@/styles/globals.css';
 
 export const dynamic = 'force-dynamic';
 
-const montserrat = Montserrat({
-  variable: '--font-montserrat',
+const dmSans = DM_Sans({
   subsets: ['latin'],
-});
-
-const montserratAlternates = Montserrat_Alternates({
-  variable: '--font-montserrat-alternates',
-  weight: ['500', '600', '700'],
-  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-dm-sans',
 });
 
 export const metadata: Metadata = {
@@ -33,17 +30,19 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: PropsWithChildren) {
   return (
-    <html lang='en'>
-      <body className={cn('font-sans antialiased', montserrat.variable, montserratAlternates.variable)}>
-        <div className='m-auto flex h-full max-w-[1440px] flex-col px-4'>
-          <AppBar />
-          <main className='relative flex-1'>
-            <div className='relative h-full'>{children}</div>
-          </main>
-          <Footer />
-        </div>
-        <Toaster />
-        <Analytics />
+    <html lang='en' suppressHydrationWarning>
+      <body className={cn('min-h-screen bg-background antialiased', dmSans.className, dmSans.variable)}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <div className='m-auto flex min-h-screen max-w-[1440px] flex-col px-4'>
+            <AppBar />
+            <main className='flex-1'>
+              <div className='h-full'>{children}</div>
+            </main>
+            <Footer />
+          </div>
+          <Toaster />
+          <Analytics />
+        </ThemeProvider>
       </body>
     </html>
   );
@@ -51,66 +50,73 @@ export default function RootLayout({ children }: PropsWithChildren) {
 
 async function AppBar() {
   return (
-    <header className='flex items-center justify-between py-8'>
-      <Logo />
-      <Navigation />
+    <header className='sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'>
+      <div className='flex h-16 items-center justify-between py-4'>
+        <Logo />
+        <div className='flex items-center gap-4'>
+          <Navigation />
+          <ModeToggle />
+        </div>
+      </div>
     </header>
   );
 }
 
 function Footer() {
   return (
-    <footer className='mt-8 flex flex-col gap-8 text-neutral-400 lg:mt-32'>
-      <div className='flex flex-col justify-between gap-8 lg:flex-row'>
-        <div>
-          <Logo />
+    <footer className='mt-8 border-t bg-background py-8 lg:mt-16'>
+      <div className='flex flex-col gap-8'>
+        <div className='flex flex-col justify-between gap-8 lg:flex-row'>
+          <div>
+            <Logo />
+          </div>
+          <div className='grid grid-cols-2 gap-8 sm:grid-cols-4 lg:grid-cols-4 lg:gap-16'>
+            <div className='flex flex-col gap-2 lg:gap-6'>
+              <div className='font-semibold text-neutral-100'>Product</div>
+              <nav className='flex flex-col gap-2 lg:gap-6'>
+                <Link href='/pricing'>Pricing</Link>
+              </nav>
+            </div>
+            <div className='flex flex-col gap-2 lg:gap-6'>
+              <div className='font-semibold text-neutral-100'>Company</div>
+              <nav className='flex flex-col gap-2 lg:gap-6'>
+                <Link href='/about-us'>About Us</Link>
+                <Link href='/privacy'>Privacy</Link>
+              </nav>
+            </div>
+            <div className='flex flex-col gap-2 lg:gap-6'>
+              <div className='font-semibold text-neutral-100'>Support</div>
+              <nav className='flex flex-col gap-2 lg:gap-6'>
+                <Link href='/support'>Get Support</Link>
+              </nav>
+            </div>
+            <div className='flex flex-col gap-2 lg:gap-6'>
+              <div className='font-semibold text-neutral-100'>Follow us</div>
+              <nav className='flex flex-col gap-2 lg:gap-6'>
+                <Link href='#'>
+                  <span className='flex items-center gap-2'>
+                    <IoLogoTwitter size={22} /> <span>Twitter</span>
+                  </span>
+                </Link>
+                <Link href='#'>
+                  <span className='flex items-center gap-2'>
+                    <IoLogoFacebook size={22} /> <span>Facebook</span>
+                  </span>
+                </Link>
+                <Link href='#'>
+                  <span className='flex items-center gap-2'>
+                    <IoLogoInstagram size={22} /> <span>Instagram</span>
+                  </span>
+                </Link>
+              </nav>
+            </div>
+          </div>
         </div>
-        <div className='grid grid-cols-2 gap-8 sm:grid-cols-4 lg:grid-cols-4 lg:gap-16'>
-          <div className='flex flex-col gap-2 lg:gap-6'>
-            <div className='font-semibold text-neutral-100'>Product</div>
-            <nav className='flex flex-col gap-2 lg:gap-6'>
-              <Link href='/pricing'>Pricing</Link>
-            </nav>
-          </div>
-          <div className='flex flex-col gap-2 lg:gap-6'>
-            <div className='font-semibold text-neutral-100'>Company</div>
-            <nav className='flex flex-col gap-2 lg:gap-6'>
-              <Link href='/about-us'>About Us</Link>
-              <Link href='/privacy'>Privacy</Link>
-            </nav>
-          </div>
-          <div className='flex flex-col gap-2 lg:gap-6'>
-            <div className='font-semibold text-neutral-100'>Support</div>
-            <nav className='flex flex-col gap-2 lg:gap-6'>
-              <Link href='/support'>Get Support</Link>
-            </nav>
-          </div>
-          <div className='flex flex-col gap-2 lg:gap-6'>
-            <div className='font-semibold text-neutral-100'>Follow us</div>
-            <nav className='flex flex-col gap-2 lg:gap-6'>
-              <Link href='#'>
-                <span className='flex items-center gap-2'>
-                  <IoLogoTwitter size={22} /> <span>Twitter</span>
-                </span>
-              </Link>
-              <Link href='#'>
-                <span className='flex items-center gap-2'>
-                  <IoLogoFacebook size={22} /> <span>Facebook</span>
-                </span>
-              </Link>
-              <Link href='#'>
-                <span className='flex items-center gap-2'>
-                  <IoLogoInstagram size={22} /> <span>Instagram</span>
-                </span>
-              </Link>
-            </nav>
-          </div>
+        <div className='border-t py-6 text-center text-sm text-muted-foreground'>
+          <span>
+            Copyright {new Date().getFullYear()} © Cannamate
+          </span>
         </div>
-      </div>
-      <div className='border-t border-zinc-800 py-6 text-center'>
-        <span className='text-neutral4 text-xs'>
-          Copyright {new Date().getFullYear()} © UPDATE_THIS_WITH_YOUR_APP_DISPLAY_NAME
-        </span>
       </div>
     </footer>
   );

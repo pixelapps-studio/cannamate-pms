@@ -31,10 +31,10 @@ export default async function AccountPage() {
   }
 
   return (
-    <section className='rounded-lg bg-black px-4 py-16'>
-      <h1 className='mb-8 text-center'>Account</h1>
+    <section className='container mx-auto px-4 py-16'>
+      <h1 className='mb-8 text-center text-4xl font-bold tracking-tight'>Account Settings</h1>
 
-      <div className='flex flex-col gap-4'>
+      <div className='flex flex-col gap-6'>
         <Card
           title='Your Plan'
           footer={
@@ -43,7 +43,7 @@ export default async function AccountPage() {
                 <Link href='/manage-subscription'>Manage your subscription</Link>
               </Button>
             ) : (
-              <Button size='sm' variant='secondary' asChild>
+              <Button size='sm' variant='default' asChild>
                 <Link href='/pricing'>Start a subscription</Link>
               </Button>
             )
@@ -52,7 +52,7 @@ export default async function AccountPage() {
           {userProduct && userPrice ? (
             <PricingCard product={userProduct} price={userPrice} />
           ) : (
-            <p>You don&apos;t have an active subscription</p>
+            <p className='text-muted-foreground'>You don&apos;t have an active subscription</p>
           )}
         </Card>
       </div>
@@ -69,12 +69,16 @@ function Card({
   footer?: ReactNode;
 }>) {
   return (
-    <div className='m-auto w-full max-w-3xl rounded-md bg-zinc-900'>
-      <div className='p-4'>
-        <h2 className='mb-1 text-xl font-semibold'>{title}</h2>
-        <div className='py-4'>{children}</div>
+    <div className='m-auto w-full max-w-3xl rounded-lg border bg-card text-card-foreground shadow-sm'>
+      <div className='p-6'>
+        <h2 className='mb-4 text-2xl font-semibold tracking-tight'>{title}</h2>
+        <div className='py-2'>{children}</div>
       </div>
-      <div className='flex justify-end rounded-b-md border-t border-zinc-800 p-4'>{footer}</div>
+      {footer && (
+        <div className='flex justify-end rounded-b-lg border-t bg-muted/50 px-6 py-4'>
+          {footer}
+        </div>
+      )}
     </div>
   );
 }
